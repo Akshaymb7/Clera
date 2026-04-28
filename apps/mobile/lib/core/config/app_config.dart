@@ -7,7 +7,7 @@ class AppConfig {
   // For emulator use 10.0.2.2 (maps to host localhost)
   static const apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080/v1',
+    defaultValue: 'https://safescanapi-production.up.railway.app/v1',
   );
 
   // Set via --dart-define=SENTRY_DSN=https://... at build time
