@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide MultipartFile;
 import '../config/app_config.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());

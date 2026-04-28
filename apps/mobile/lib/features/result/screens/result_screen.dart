@@ -110,10 +110,9 @@ class ResultScreen extends ConsumerWidget {
                     icon: Icons.picture_as_pdf_outlined,
                     onTap: () {
                       final url = ref.read(apiClientProvider).scanExportUrl(productId);
-                      SharePlus.instance.share(ShareParams(
-                        text: 'Clera scan report',
-                        uri: Uri.parse(url),
-                      ));
+                      Share.share(
+                        'Clera scan report: $url',
+                      );
                     },
                   ),
                   const SizedBox(width: 8),
@@ -123,9 +122,9 @@ class ResultScreen extends ConsumerWidget {
                       final scanData = scanAsync.valueOrNull;
                       final name = (scanData?['productName'] as String?) ?? 'this product';
                       final score = (scanData?['score'] as num?)?.toInt() ?? 0;
-                      SharePlus.instance.share(ShareParams(
-                        text: 'I scanned $name on Clera — safety score: $score/100. Check your labels before you buy!',
-                      ));
+                      Share.share(
+                        'I scanned $name on Clera — safety score: $score/100. Check your labels before you buy!',
+                      );
                     },
                   ),
                 ],
