@@ -61,8 +61,8 @@ CREATE POLICY "intent_own_data" ON "PurchaseIntent"
 
 ## Phase 4 — Infrastructure / Deployment
 
-- [ ] 🤝 **P4-1** Deploy API to Railway
-- [ ] 🤝 **P4-2** Update `AppConfig.apiBaseUrl` to production URL after deploy
+- [x] ✅ **P4-1** Deploy API to Railway — live at `https://safescanapi-production.up.railway.app`
+- [x] ✅ **P4-2** Update `AppConfig.apiBaseUrl` to production URL after deploy
 - [x] ✅ **P4-3** Set up CI/CD (GitHub Actions) — api.yml + flutter.yml
 - [x] ✅ **P4-4** Set up error monitoring (Sentry) — @sentry/node (API) + sentry_flutter (app)
 - [x] ✅ **P4-5** Set up uptime monitoring — GitHub Actions cron every 5 min + BetterStack heartbeat
@@ -144,19 +144,39 @@ CREATE POLICY "intent_own_data" ON "PurchaseIntent"
 
 ## What YOU must do before going live
 
-| # | Action | Where |
-|---|--------|--------|
-| 1 | Run RLS SQL above | Supabase Dashboard → SQL Editor |
-| 2 | Deploy API to Railway | railway.app (see Phase 4 steps) |
-| 3 | Set env vars in Railway | Railway dashboard |
-| 4 | Update `apiBaseUrl` in `app_config.dart` | After Railway deploy |
-| 5 | Set GitHub Secrets | Repo → Settings → Secrets: `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `RAILWAY_TOKEN`, `API_BASE_URL`, `SENTRY_DSN`, `BETTERSTACK_HEARTBEAT_URL` |
-| 6 | Run `flutter pub get` in `apps/mobile/` | Your terminal (after adding Flutter to PATH) |
-| 7 | Export app icon SVG → 1024×1024 PNG | Figma / Inkscape |
-| 8 | Run `dart run flutter_launcher_icons` | `apps/mobile/` terminal |
-| 9 | Register IAP product IDs | App Store Connect + Play Console: `clera_pro_annual`, `clera_pro_monthly`, `clera_family_annual` |
-| 10 | Build release APK/IPA | `flutter build apk --release` |
-| 11 | Create App Store + Play Store listings | App Store Connect + Play Console |
+| # | Status | Action | Where |
+|---|--------|--------|--------|
+| 1 | ✅ Done | Run RLS SQL | Supabase Dashboard → SQL Editor |
+| 2 | ✅ Done | Deploy API to Railway | Live at `https://safescanapi-production.up.railway.app` |
+| 3 | ✅ Done | Set env vars in Railway | `DATABASE_URL`, `NODE_ENV`, `PORT`, `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` |
+| 4 | ✅ Done | Update `apiBaseUrl` in `app_config.dart` | Points to Railway URL |
+| 5 | 🔴 **URGENT** | Rotate exposed secrets | Anthropic key + Supabase service role key + DB password were visible in chat — rotate all three now |
+| 6 | 🤝 Pending | Set GitHub Secrets for CI/CD | Repo → Settings → Secrets: `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `RAILWAY_TOKEN`, `API_BASE_URL`, `SENTRY_DSN`, `BETTERSTACK_HEARTBEAT_URL` |
+| 7 | 🤝 Pending | Run `flutter pub get` in `apps/mobile/` | Your terminal (after adding Flutter to PATH) |
+| 8 | 🤝 Pending | Export app icon SVG → 1024×1024 PNG | Open `assets/icons/clera_icon.svg` in Figma / Inkscape → export PNG |
+| 9 | 🤝 Pending | Run `dart run flutter_launcher_icons` | `apps/mobile/` terminal after step 8 |
+| 10 | 🤝 Pending | Register IAP product IDs | App Store Connect + Play Console: `clera_pro_annual`, `clera_pro_monthly`, `clera_family_annual` |
+| 11 | 🤝 Pending | Build release APK/IPA | `flutter build apk --release` / `flutter build ipa` |
+| 12 | 🤝 Pending | Create App Store + Play Store listings | App Store Connect + Play Console |
+
+### How to rotate secrets (do this now)
+
+**Anthropic API key:**
+1. Go to console.anthropic.com → API Keys
+2. Delete the old key (`sk-ant-api03-otYAmFe...`)
+3. Create a new key → copy it
+4. Update `ANTHROPIC_API_KEY` in Railway Variables
+
+**Supabase service role key:**
+1. Supabase Dashboard → Project Settings → API
+2. Click "Reset" next to Service Role key
+3. Copy the new key
+4. Update `SUPABASE_SERVICE_ROLE_KEY` in Railway Variables
+
+**Database password:**
+1. Supabase Dashboard → Project Settings → Database → Reset database password
+2. Copy the new password (URL-encode `@` as `%40` if present)
+3. Update `DATABASE_URL` in Railway: `postgresql://postgres.cjfetpevxdtszlalcqgc:NEWPASSWORD@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres`
 
 ---
 
@@ -209,3 +229,5 @@ CREATE POLICY "intent_own_data" ON "PurchaseIntent"
 | 2026-04-28 | P7-11 Home gallery pick: wired to pendingScanProvider | ✅ |
 | 2026-04-28 | P7-12 Anthropic system prompt: SafeScan → Clera | ✅ |
 | 2026-04-28 | P7-13 CI: removed stale JWT_SECRET + REDIS_URL | ✅ |
+| 2026-04-28 | P4-1 API deployed to Railway (fixed OpenSSL, region, env vars) | ✅ |
+| 2026-04-28 | P4-2 Flutter apiBaseUrl updated to Railway production URL | ✅ |
