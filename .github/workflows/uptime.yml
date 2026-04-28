@@ -1,0 +1,43 @@
+name: Uptime Check
+
+on:
+  schedule:
+    # Every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.API_BASE_URL }}/health" --max-time 10)
+          echo "Health status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Health check failed with status $STATUS"
+            exit 1
+          fi
+
+      - name: Ping readiness endpoint
+        run: |
+          RESPONSE=$(curl -s "${{ secrets.API_BASE_URL }}/ready" --max-time 15)
+          echo "$RESPONSE"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.API_BASE_URL }}/ready" --max-time 15)
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Readiness check failed with status $STATUS"
+            exit 1
+          fi
+
+      - name: Notify BetterStack on failure
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.BETTERSTACK_HEARTBEAT_URL }}" ]; then
+            curl -s "${{ secrets.BETTERSTACK_HEARTBEAT_URL }}/fail"
+          fi
+
+      - name: Heartbeat BetterStack on success
+        if: success() && env.BETTERSTACK_HEARTBEAT_URL != ''
+        env:
+          BETTERSTACK_HEARTBEAT_URL: ${{ secrets.BETTERSTACK_HEARTBEAT_URL }}
+        run: curl -s "$BETTERSTACK_HEARTBEAT_URL"

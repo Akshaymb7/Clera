@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "bands": [
+    { "band": "excellent", "min": 85, "max": 100, "description": "No meaningful concerns" },
+    { "band": "good",      "min": 70, "max": 84,  "description": "Minor concerns, common additives" },
+    { "band": "caution",   "min": 40, "max": 69,  "description": "Multiple questionable ingredients or one moderate allergen match" },
+    { "band": "poor",      "min": 20, "max": 39,  "description": "Multiple moderate or one high-risk ingredient" },
+    { "band": "avoid",     "min": 0,  "max": 19,  "description": "Banned, carcinogenic, or major regulatory warnings present" }
+  ],
+  "riskLevels": ["safe", "low", "moderate", "high", "critical"],
+  "regulatoryFlagExamples": ["EU_banned", "FDA_warning", "IARC_group1", "PROP_65"]
+}

@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Tier {
+  free
+  pro
+  family
+}
+
+enum Gender {
+  male
+  female
+  non_binary
+  prefer_not_to_say
+}
+
+enum Category {
+  food
+  cosmetic
+  medicine
+  household
+}
+
+enum Band {
+  excellent
+  good
+  caution
+  poor
+  avoid
+}
+
+enum RiskLevel {
+  safe
+  low
+  moderate
+  high
+  critical
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  name          String
+  age           Int
+  gender        Gender
+  locale        String    @default("en-IN")
+  country       String?
+  city          String?
+  tier          Tier      @default(free)
+  profileJson   Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  scans           Scan[]
+  subscriptions   Subscription[]
+  feedback        Feedback[]
+  purchaseIntents PurchaseIntent[]
+
+  @@index([deletedAt])
+}
+
+model Scan {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [id])
+  category     Category
+  productName  String?
+  brand        String?
+  imageS3Key   String
+  imageHash    String
+  score        Int
+  band         Band
+  lang         String   @default("en")
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  latencyMs    Int
+  costUsd      Decimal  @db.Decimal(10, 6)
+  rawResponse  Json
+  createdAt    DateTime @default(now())
+
+  productImageId String?       @db.Uuid
+  productImage   ProductImage? @relation(fields: [productImageId], references: [id])
+
+  ingredients     ScanIngredient[]
+  feedback        Feedback[]
+  purchaseIntent  PurchaseIntent?
+
+  @@index([userId, createdAt])
+  @@index([imageHash])
+  @@index([productImageId])
+}
+
+model ScanIngredient {
+  id              String    @id @default(uuid()) @db.Uuid
+  scanId          String    @db.Uuid
+  scan            Scan      @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  name            String
+  normalizedName  String
+  riskLevel       RiskLevel
+  reason          String
+  regulatoryFlags String[]
+  position        Int
+
+  @@index([scanId])
+  @@index([normalizedName])
+}
+
+model Subscription {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id])
+  platform  String
+  productId String
+  status    String
+  startedAt DateTime  @default(now())
+  renewsAt  DateTime?
+  receipt   String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId, status])
+}
+
+model Feedback {
+  id        String   @id @default(uuid()) @db.Uuid
+  scanId    String?  @db.Uuid
+  userId    String   @db.Uuid
+  scan      Scan?    @relation(fields: [scanId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  type      String?
+  rating    Int?
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Deduplicated product image library — one row per unique product label image
+model ProductImage {
+  id          String   @id @default(uuid()) @db.Uuid
+  imageHash   String   @unique
+  storageKey  String
+  mimeType    String
+  category    Category
+  productName String?
+  brand       String?
+  country     String?
+  city        String?
+  scanCount   Int      @default(1)
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  scans Scan[]
+
+  @@index([brand])
+  @@index([category])
+  @@index([country, city])
+}
+
+enum PurchaseDecision {
+  buying
+  not_buying
+  maybe
+}
+
+// Captures buy/skip intent after each scan — core MNC data asset
+model PurchaseIntent {
+  id         String           @id @default(uuid()) @db.Uuid
+  scanId     String           @db.Uuid @unique
+  scan       Scan             @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  userId     String           @db.Uuid
+  user       User             @relation(fields: [userId], references: [id])
+  decision   PurchaseDecision
+  reason     String?
+  createdAt  DateTime         @default(now())
+
+  @@index([userId])
+  @@index([decision])
+  @@index([scanId])
+}
+
+model ApiUsageDaily {
+  day          DateTime @db.Date
+  userId       String   @db.Uuid
+  model        String
+  inputTokens  BigInt
+  outputTokens BigInt
+  costUsd      Decimal  @db.Decimal(12, 6)
+
+  @@id([day, userId, model])
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="230" fill="#0D4A2E"/>
+
+  <!-- Scan frame — top-left bracket -->
+  <path d="M300 280 L300 360 M300 280 L380 280" stroke="white" stroke-width="42" stroke-linecap="round" fill="none"/>
+  <!-- Scan frame — top-right bracket -->
+  <path d="M724 280 L724 360 M724 280 L644 280" stroke="white" stroke-width="42" stroke-linecap="round" fill="none"/>
+  <!-- Scan frame — bottom-left bracket -->
+  <path d="M300 744 L300 664 M300 744 L380 744" stroke="white" stroke-width="42" stroke-linecap="round" fill="none"/>
+  <!-- Scan frame — bottom-right bracket -->
+  <path d="M724 744 L724 664 M724 744 L644 744" stroke="white" stroke-width="42" stroke-linecap="round" fill="none"/>
+
+  <!-- Leaf — centered -->
+  <ellipse cx="512" cy="490" rx="90" ry="155" fill="#4EE890" transform="rotate(-30 512 490)"/>
+  <!-- Leaf vein -->
+  <line x1="512" y1="348" x2="512" y2="632" stroke="#0D4A2E" stroke-width="12" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Scan line -->
+  <line x1="340" y1="512" x2="684" y2="512" stroke="#4EE890" stroke-width="6" stroke-linecap="round" stroke-dasharray="18 12" opacity="0.8"/>
+</svg>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Clera forest green background -->
+    <item android:drawable="@color/clera_bg" />
+    <!-- Centered wordmark / icon placeholder — replace with @mipmap/launch_image when asset ready -->
+</layer-list>
