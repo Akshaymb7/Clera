@@ -7,11 +7,11 @@ export enum SubscriptionPlatform {
 
 export class VerifyReceiptDto {
   @IsEnum(SubscriptionPlatform)
-  platform: SubscriptionPlatform;
+  platform!: SubscriptionPlatform;
 
   @IsString()
-  productId: string;
+  productId!: string;
 
   @IsString()
-  receipt: string; // base64 receipt (iOS) or purchase token (Android)
+  receipt!: string;
 }

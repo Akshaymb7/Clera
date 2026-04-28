@@ -12,7 +12,7 @@ export class CreateFeedbackDto {
   rating?: number;
 
   @IsString()
-  comment: string;
+  comment!: string;
 
   @IsOptional()
   @IsString()
