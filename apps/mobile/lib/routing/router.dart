@@ -19,6 +19,9 @@ import '../features/settings/screens/privacy_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/settings/screens/terms_screen.dart';
 import '../features/history/screens/favourites_screen.dart';
+import '../features/settings/screens/profile_screen.dart';
+import '../features/settings/screens/delete_account_screen.dart';
+import '../features/settings/screens/policies_screen.dart';
 
 // Cached profile check — null = unknown, true = complete, false = needs setup
 final profileCompleteProvider = StateProvider<bool?>((ref) => null);
@@ -87,6 +90,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/about',       builder: (_, __) => const AboutScreen()),
       GoRoute(path: '/feedback',    builder: (_, __) => const FeedbackScreen()),
       GoRoute(path: '/favourites',  builder: (_, __) => const FavouritesScreen()),
+      GoRoute(path: '/profile',         builder: (_, __) => const ProfileScreen()),
+      GoRoute(path: '/delete-account',  builder: (_, __) => const DeleteAccountScreen()),
+      GoRoute(path: '/policies',        builder: (_, __) => const PoliciesScreen()),
     ],
     errorBuilder: (context, state) => const HomeScreen(),
   );

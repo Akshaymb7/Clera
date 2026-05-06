@@ -57,7 +57,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       await ref.read(authServiceProvider).verifyOtp(email, code);
       if (mounted) context.go('/profile/setup');
     } catch (e) {
-      setState(() => _error = 'Invalid or expired code. Please try again.');
+      setState(() => _error = 'Error: $e');
       for (final c in _controllers) { c.clear(); }
       _focusNodes[0].requestFocus();
     } finally {

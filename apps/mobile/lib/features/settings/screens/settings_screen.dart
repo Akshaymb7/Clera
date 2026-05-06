@@ -153,6 +153,12 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         _SettingsRow(
                           icon: Icons.person_outline,
+                          label: 'My Profile',
+                          dark: dark,
+                          onTap: () => context.push('/profile'),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.person_outline,
                           label: 'Edit Profile',
                           dark: dark,
                           onTap: () => context.push('/profile/setup'),
